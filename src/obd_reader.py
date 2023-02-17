@@ -31,7 +31,7 @@ class OBDReader:
         response = self.connection.query(obd.commands.SPEED)
         # print(response.value.to('mph'))
         # print(int(response.value.magnitude), int(response.value.to('mph').magnitude))
-        return int(response.value.magnitude), int(response.value.to('mph').magnitude)
+        return int(response.value.to('mph').magnitude), int(response.value.magnitude) 
 
     def get_rpm(self):
         if self.is_demo:

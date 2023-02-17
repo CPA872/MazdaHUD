@@ -18,7 +18,7 @@ curr_color = 0
 curr_mode  = 0
 
 try:
-    obd = obd_reader.OBDReader(True, True)
+    obd = obd_reader.OBDReader(True, DEMO_MODE)
     obd.start_async_watch()
 except:
     obd.connection.close()

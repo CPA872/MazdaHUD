@@ -2,6 +2,7 @@ import sys
 import utils
 import hud_widgets
 import multiprocessing
+import time
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QObject, QRunnable, QThreadPool
@@ -42,6 +43,8 @@ class MazdaHUD(QMainWindow):
         self.thread_pool.setMaxThreadCount(2) 
 
         utils.sensor_reader.start()
+        #time.sleep(30)
+        print("sensor calibration done")
         utils.gps_reader.start()
 
         

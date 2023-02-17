@@ -85,6 +85,7 @@ class GPSWidget(QWidget):
 
         self.gps_alt_label = hud_labels.PlainLabel("ALT ---- ", self)
         self.gps_alt_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
+        self.gps_alt_label.setVisible(False)
 
         self.layout.addWidget(self.gps_alt_label)
         self.layout.addWidget(self.gps_coor_label)
@@ -94,7 +95,7 @@ class GPSWidget(QWidget):
 
         self.gps_timer = QTimer()
         self.gps_timer.timeout.connect(self.update_gps)
-        self.gps_timer.start(3000)
+        self.gps_timer.start(1000)
         # asyncio.ensure_future(self.update_gps_async())
         
     def update_gps(self):
