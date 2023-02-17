@@ -1,3 +1,4 @@
 *py_cache*
 .vscode
 *idea
+src/__pycache__
