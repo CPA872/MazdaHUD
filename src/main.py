@@ -16,6 +16,7 @@ class MazdaHUD(QMainWindow):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setFixedSize(800, 480)
         self.setStyleSheet("background-color: black;")
+        # self.showMaximized()
 
         self.placeholder = QLabel()
         self.setCentralWidget(self.placeholder)
@@ -43,9 +44,6 @@ class MazdaHUD(QMainWindow):
         utils.sensor_reader.start()
         utils.gps_reader.start()
 
-        # self.thread_pool.start(utils.sensor_reader)
-        # self.thread_pool.start(utils.gps_reader)
-        
         
     def closeEvent(self, event):
         # Stop the threads before closing the window
@@ -63,8 +61,3 @@ if __name__ == '__main__':
     # app.aboutToQuit.connect(my_app.thread_pool.waitForDone)
 
     sys.exit(app.exec_())
-    
-"""
-    TODO: thread not stop after main app quit
-    TODO: GPS thread update
-"""

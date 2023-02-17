@@ -11,8 +11,11 @@ import gps_reader
 from sensor import sensor_reader
 
 DEMO_MODE = True
-LIGHT_GREEN = "#11ff00"
+DISPLAY_COLORS = ["#33FF00", "#FFC000"]
 DEFAUT_FONT = "Consolas"
+DISPLAY_MODES = ["normal_imperial", "normal_metric", "zen_imperial", "zen_metric", "full_imperial", "full_metric"]
+curr_color = 0
+curr_mode  = 0
 
 try:
     obd = obd_reader.OBDReader(True, True)

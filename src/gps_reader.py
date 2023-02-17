@@ -42,7 +42,7 @@ class GPSReader(QThread):
                 lon_dir = "E" if lon >= 0 else "W"
                 lat = abs(lat)
                 lon = abs(lon)
-                
+
                 self.alt = alt
                 
                 if mode == 1 or mode == 2 or lat == "n/a" or lon == "n/a" or alt == "n/a":
@@ -55,7 +55,7 @@ class GPSReader(QThread):
                     self.mode = int(mode)
                 
                 time.sleep(3)
-                print(self.coor, self.mode, self.alt)
+                # print(self.coor, self.mode, self.alt)
     
     def stop(self):
         self.is_stopped = True

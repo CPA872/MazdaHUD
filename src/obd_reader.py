@@ -26,6 +26,7 @@ class OBDReader:
     def get_speed(self):
         if self.is_demo:
             return 101, 163
+        
         # print("call get speed")
         response = self.connection.query(obd.commands.SPEED)
         # print(response.value.to('mph'))

@@ -34,7 +34,7 @@ class SensorReader(QThread):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(BUTTON_GPIO, GPIO.FALLING, 
-            callback=self.button_pressed_callback, bouncetime=100)
+            callback=self.button_pressed_callback, bouncetime=200)
 
     def button_pressed_callback(self, channel):
         print("button presses")
