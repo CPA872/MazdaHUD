@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, QRunnable, QThreadPool
+from PyQt5.QtCore import QRunnable, QThread
 
 import board
 import brightness_reader
@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 
 BUTTON_GPIO = 15
 
-class SensorReader(QRunnable):
+class SensorReader(QThread):
     def __init__(self, dht_pin):
         super().__init__()
         self.imu = imu_reader.IMUReader()
@@ -27,7 +27,7 @@ class SensorReader(QRunnable):
         self.f_temp = 0
         self.humidity = 0
         
-        self.visible_brightness = 0
+        self.brightness = 0
         
         self.stopped = False
         
@@ -51,7 +51,7 @@ class SensorReader(QRunnable):
         self.humidity = self.dht.get_humidity()
     
     def brightness_update(self):
-        self.visible_brightness = self.lightSensor.get_visible()
+        self.brightness = self.lightSensor.get_visible()
 
     def sensor_all_update(self):
         self.imu_update()
@@ -60,9 +60,12 @@ class SensorReader(QRunnable):
         
     def run(self):
         while not self.stopped:
+            if self.isInterruptionRequested():
+                return
+            
             # print("update loop")
             self.sensor_all_update()
-            time.sleep(0.01)
+            time.sleep(0.05)
   
     def stop(self):
         self.stopped = True
