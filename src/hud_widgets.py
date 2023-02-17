@@ -12,6 +12,9 @@ from PyQt5.QtGui import QPainter, QLinearGradient, QColor
 
 from gps_reader import read_gps
 
+button_pressed = False
+
+
 class RPMWidget(QWidget):
     def __init__(self):
         super().__init__()
@@ -66,6 +69,11 @@ class RPMWidget(QWidget):
         else:
             self.rpm_value_label.setStyleSheet("color: red; font-size: 15pt; font-family: Consolas;")
             self.rpm_bar.setStyleSheet(" QProgressBar::chunk { background-color: red; }")
+        
+        global button_pressed
+        if button_pressed == True:
+            self.setVisible(False)
+            button_pressed = False
 
 
 class GPSWidget(QWidget):
@@ -92,13 +100,13 @@ class GPSWidget(QWidget):
 
         self.gps_timer = QTimer()
         self.gps_timer.timeout.connect(self.update_gps)
-        self.gps_timer.start(3000)
+        self.gps_timer.start(10000)
         # asyncio.ensure_future(self.update_gps_async())
 
     def update_gps(self):
         # return
         mode, coor, alt = read_gps()
-        print("GPS return: ", mode, coor, alt)
+        # print("GPS return: ", mode, coor, alt)
         alt = 120
 
         if mode == 3:  # GPS 3D FIX
@@ -115,6 +123,8 @@ class GPSWidget(QWidget):
 
             self.gps_alt_label = hud_labels.PlainLabel("ALT ----  ", self)
             self.gps_alt_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
+        
+
 
     # async def update_gps_async(self):
     #     while True:
@@ -143,6 +153,7 @@ class SpeedWidget(QWidget):
 
         self.update_speed(75, 120)
         self.update_format(False)
+        
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_speed)
         self.timer.start(10)
@@ -168,3 +179,33 @@ class SpeedWidget(QWidget):
 class BottomStatusWidget(QWidget):
     def __init__(self):
         super().__init__()
+
+
+class StatusWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.layout = QHBoxLayout()
+        self.setFixedSize(550, 50)
+        # self.setStyleSheet("border: 1px solid yellow;")
+
+        self.status_label = hud_labels.PlainLabel("[test]")
+        self.layout.addWidget(self.status_label)
+        self.status_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 15pt; font-family: Consolas;")
+        
+        self.status_label.setProperty("text", f"acc: {utils.sensors.acceleration:2f}, temp: {utils.sensors.c_temp}, hdg: {utils.sensors.heading_angle}")
+
+        self.setLayout(self.layout)
+        
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_sensors)
+        self.timer.start(50)
+        
+    def update_sensors(self):
+        # print("called update sensors")
+        # utils.sensors.sensor_all_update()
+        self.status_label.setProperty("text", f"ACC: {utils.sensors.acceleration:.2f} IAT: {utils.sensors.c_temp:.1f} °C, HDG: {utils.sensors.heading_angle:.0f}")
+
+        global button_pressed
+        if utils.sensors.button_pressed == True: 
+            button_pressed = True
+            utils.sensors.button_pressed = False

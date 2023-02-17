@@ -1,25 +1,30 @@
 # utils
 import obd_reader
+import board
+import time
+import sys
+import multiprocessing
 
-# global positioning parameters (upper left corner coordinates)
-# 800x480
-RPM_BAR_VALUE = (50, 50)
-RPM_BAR_LABEL = (30, 750)
-RPM_BAR = (50, 100)
+sys.path.insert(1, 'sensor')
 
-GPS_LABEL = (200, 50)
-GPS_SPEED_ALT = (300, 50)
+from sensor import sensor_reader
 
-IAT_LABEL = (650, 750)
-
-SMALL_FONT_SIZE = 30
-
+DEMO_MODE = True
 LIGHT_GREEN = "#11ff00"
 DEFAUT_FONT = "Consolas"
 
 try:
-    obd = obd_reader.OBDReader(True)
+    obd = obd_reader.OBDReader(True, True)
     obd.start_async_watch()
 except:
     obd.connection.close()
     print("OBD initialization error")
+    
+
+dht_pin = board.D14
+sensors = sensor_reader.SensorReader(dht_pin)
+
+def update_sensors():
+    while True:
+        sensors.sensor_all_update()
+        time.sleep(0.01)

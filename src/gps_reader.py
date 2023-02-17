@@ -3,7 +3,7 @@ import time
 
 def read_gps():
     # time.sleep(3)
-    print("call read_gps")
+    # print("call read_gps")
     with GPSDClient(host='127.0.0.1') as client:
         for result in client.dict_stream(convert_datetime=True, filter=["TPV"]):
             # print(result)

@@ -1,11 +1,10 @@
 import sys
-# import obd
 import utils
 import hud_widgets
 import multiprocessing
 
-
 from PyQt5 import QtCore
+from PyQt5.QtCore import QObject, QRunnable, QThreadPool
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QTimer
@@ -33,10 +32,30 @@ class MazdaHUD(QMainWindow):
         self.spd_widget = hud_widgets.SpeedWidget()
         self.spd_widget.move(250, 200)
         self.spd_widget.setParent(self)
+        
+        self.status_widget = hud_widgets.StatusWidget()
+        self.status_widget.move(100, 400)
+        self.status_widget.setParent(self)
+            
+        self.thread_pool = QThreadPool.globalInstance()
+        self.thread_pool.setMaxThreadCount(1) # set the maximum number of threads to 1
+
+        self.thread_pool.start(utils.sensors)
+        self.thread_pool.destroyed.connect(utils.sensors.stop)
 
 
 if __name__ == '__main__':
+    # sensor_process = multiprocessing.Process(target=utils.sensors.update_loop)
+    # sensor_process.start()
+    
     app = QApplication(sys.argv)
     my_app = MazdaHUD()
     my_app.show()
+    app.aboutToQuit.connect(my_app.thread_pool.waitForDone)
+
     sys.exit(app.exec_())
+    
+"""
+    TODO: thread not stop after main app quit
+    TODO: GPS thread update
+"""

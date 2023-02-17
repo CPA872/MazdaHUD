@@ -1,9 +1,9 @@
-import sensor_main
+import sensor.sensor as sensor
 import board
 import time
 
 dht_pin = board.D14
-sensors = sensor_main.sensor(dht_pin)
+sensors = sensor.Sensor(dht_pin)
 
 while True:
     print("=============================")
@@ -18,3 +18,4 @@ while True:
     
     print("Brightness level:", sensors.visible_brightness)
     time.sleep(2)
+    

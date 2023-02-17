@@ -12,8 +12,8 @@ class IMUReader:
         self.imu = MPU9250.MPU9250(bus, address)
         self.imu.begin()
         self.imu.setAccelRange("AccelRangeSelect2G")
-        self.imu.caliberateAccelerometer()
-        self.imu.caliberateMagPrecise()
+#        self.imu.caliberateAccelerometer()
+#        self.imu.caliberateMagPrecise()
         self.mag_declination = 11
         self.sensorfusion = kalman.Kalman()
         self.imu.readSensor()
@@ -49,7 +49,8 @@ class IMUReader:
             heading_angle = heading_angle + 360
         elif (heading_angle > 360):
             heading_angle = heading_angle - 360
-        
+
+        compass_direction = 0
         heading_angle = 360 - heading_angle
         if (heading_angle >= 0 and heading_angle < 22.5) or (heading_angle >= 337.5 and heading_angle <= 360):
             compass_direction = "N"
