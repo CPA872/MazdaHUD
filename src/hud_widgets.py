@@ -97,30 +97,26 @@ class GPSWidget(QWidget):
         self.gps_timer.start(3000)
         # asyncio.ensure_future(self.update_gps_async())
         
-        # self.vis_timer = QTimer()
-        # self.vis_timer.timeout.conect(self.update_vis)
-        # self.vis_timer.start(100)
-
     def update_gps(self):
         # print("call update_gps in gps widget, mode ", utils.gps_reader.mode)
         if utils.gps_reader.mode == 3:  # GPS 3D FIX
-            self.gps_label.stop_blinking()
             self.gps_coor_label.setProperty("text", f" {utils.gps_reader.coor} ")
             self.gps_alt_label.setProperty("text", f" ALT {utils.gps_reader.alt}m")
             
             self.gps_alt_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
             self.gps_coor_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
             self.gps_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
+            self.gps_label.stop_blinking()
         else:
-            self.gps_label.start_blinking()
-            self.gps_label = hud_labels.BlinkingBorderedLabel(f"GPS FIX", {utils.DISPLAY_COLORS[utils.curr_color]}, self)
+            # self.gps_label = hud_labels.BlinkingBorderedLabel(f"GPS FIX", {utils.DISPLAY_COLORS[utils.curr_color]}, self)
             self.gps_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
 
-            self.gps_coor_label = hud_labels.PlainLabel(" --.-----° N, --.------° E ", self)
+            self.gps_coor_label.setText(" --.-----° N, --.------° E ")
             self.gps_coor_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
 
-            self.gps_alt_label = hud_labels.PlainLabel("ALT ---- ", self)
+            self.gps_alt_label.setText("ALT ---- ")
             self.gps_alt_label.setStyleSheet(f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas;")
+            self.gps_label.start_blinking()
         
         if utils.DISPLAY_MODES[utils.curr_mode] in ["zen_metric", "zen_imperial"]:
             self.setVisible(False)

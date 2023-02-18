@@ -2,6 +2,8 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPainter, QTransform
 from PyQt5.QtWidgets import QLabel
 
+import utils
+
 # label with text horizontally flipped.
 class FlippedLabel(QLabel):
 
@@ -51,7 +53,7 @@ class BlinkingBorderedLabel(FlippedLabel):
     def __init__(self, text, border_color, parent=None):
         super().__init__(text, parent)
         self.border_color = border_color
-        self.setStyleSheet(f" border: 1px solid {border_color}; padding: 5px;")
+        self.setStyleSheet(f" border: 1px solid {utils.DISPLAY_COLORS[utils.curr_color]}; padding: 5px;")
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.toggle_border)
@@ -61,16 +63,16 @@ class BlinkingBorderedLabel(FlippedLabel):
 
     def toggle_border(self):
         self.border_visible = not self.border_visible
-        border_style = f"1px solid {self.border_color}" if self.border_visible else "0px"
+        border_style = f"1px solid {utils.DISPLAY_COLORS[utils.curr_color]}" if self.border_visible else "0px"
         self.setStyleSheet(
-            f"color: {self.border_color}; font-size: 15pt; font-family: Consolas; border: {border_style}; padding: 5px;")
+            f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas; border: {border_style}; padding: 5px;")
 
     def stop_blinking(self):
         self.timer.stop()
         self.border_visible = True
-        border_style = f"2px solid {self.border_color}" if self.border_visible else "0px"
+        border_style = f"1px solid {utils.DISPLAY_COLORS[utils.curr_color]}" if self.border_visible else "0px"
         self.setStyleSheet(
-            f"color: {self.border_color}; font-size: 15pt; font-family: Consolas; border: {border_style}; padding: 5px;")
+            f"color: {utils.DISPLAY_COLORS[utils.curr_color]}; font-size: 15pt; font-family: Consolas; border: {border_style}; padding: 5px;")
 
     def start_blinking(self):
         self.timer.start()
