@@ -1,22 +1,27 @@
 from gpsdclient import GPSDClient
 
+
 def read_gps():
     with GPSDClient(host='127.0.0.1') as client:
         for result in client.dict_stream(convert_datetime=True, filter=["TPV"]):
             
             mode = result.get("mode", "n/a")
             lat  = result.get("lat", "n/a")
-            long = result.get("lon", "n/a")
+            lon = result.get("lon", "n/a")
             alt  = result.get("alt", "n/a")
             
             mode = int(mode)
-            if mode == 1 or mode == 2:
-                return (-1, -999, -999, -999)
+            if mode == 1 or mode == 2 or lat == "n/a" or lon == "n/a" or alt == "n/a":
+                return "-1", "-999", "-999"
             else:
-                lat = "%.5f" % float(lat)
-                long = "%.5f" % float(long)
-                alt = "%d" % int(alt)
-                return (mode, lat, long, alt)
-            
+                lat = float(lat)
+                lon = float(lon)
+                alt = int(alt)
+                lat_dir = "N" if lat >= 0 else "S"
+                lon_dir = "E" if lon >= 0 else "W"
+                lat = abs(lat)
+                lon = abs(lon)
+                coor = f"{lat:.5f}° {lat_dir}, {lon:.5f}° {lon_dir}"
 
-print(read_gps())
+                return mode, coor, alt
+            

@@ -68,6 +68,9 @@ class BlinkingBorderedLabel(FlippedLabel):
 
     def stop_blinking(self):
         self.timer.stop()
+        self.border_visible = True
+        border_style = f"2px solid {self.border_color}" if self.border_visible else "0px"
+        self.setStyleSheet(f"color: lightgreen; font-size: 15pt; font-family: Consolas; border: {border_style}; padding: 5px;")
 
     def start_blinking(self):
         self.timer.start()

@@ -5,10 +5,15 @@ from PyQt5 import QtWidgets, QtCore
 import utils
 import hud_labels
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QProgressBar, QSizePolicy, QSpacerItem
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QPainter, QLinearGradient, QColor
+
+from gps_reader import read_gps
+
+
+# from gps_reader import read_gps
 
 
 class RPMWidget(QWidget):
@@ -80,34 +85,42 @@ class GPSWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.layout = QHBoxLayout()
-        self.setFixedSize(400, 50)
+        self.setFixedSize(550, 50)
         # self.setStyleSheet("border: 1px solid yellow;")
 
-        self.gps_label = hud_labels.BlinkingBorderedLabel("GPS", utils.LIGHT_GREEN, self)
+        self.gps_label = hud_labels.BlinkingBorderedLabel("GPS FIX", utils.LIGHT_GREEN, self)
         self.gps_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
-        self.gps_spd_label = hud_labels.PlainLabel("  SPD ---  ", self)
-        self.gps_spd_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
+        self.gps_coor_label = hud_labels.PlainLabel(" 44.813360° N, 6.550329° E ", self)
+        self.gps_coor_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
-        self.gps_alt_label = hud_labels.PlainLabel("  ALT ----  ", self)
+        self.gps_alt_label = hud_labels.PlainLabel("ALT ----  ", self)
         self.gps_alt_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
         self.layout.addWidget(self.gps_alt_label)
-        self.layout.addWidget(self.gps_spd_label)
+        self.layout.addWidget(self.gps_coor_label)
         self.layout.addWidget(self.gps_label)
 
         self.setLayout(self.layout)
 
-    def update_gps(self, fix_state, spd, alt):
-        if fix_state:
-            self.gps_label.stop_blinking()
-        if not fix_state:
-            self.gps_label.start_blinking()
-            self.gps_spd_label.setText("  SPD ---")
-            self.gps_alt_label.setText("  ALT ----")
+        self.gps_timer = QTimer()
+        self.gps_timer.timeout.connect(self.update_gps)
+        self.gps_timer.start(10000)
 
-        self.gps_spd_label.setText("  SPD %3d" % int(spd))
-        self.gps_alt_label.setText("  ALT %4d" % int(alt))
+    def update_gps(self):
+        # return
+        mode, coor, alt = read_gps()
+        # mode = 3
+        # coor = "51.813360° N, 99.550329°Z"
+        # alt = 555
+        # print("update gps")
+
+        if mode == 3:  # GPS FIX
+            self.gps_label.stop_blinking()
+            self.gps_coor_label.setProperty("text", f" {coor} ")
+            self.gps_alt_label.setProperty("text", f" ALT {alt}m")
+        else:
+            self.gps_label.start_blinking()
 
 
 class SpeedWidget(QWidget):
