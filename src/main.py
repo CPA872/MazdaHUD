@@ -16,18 +16,20 @@ class MazdaHUD(QMainWindow):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setFixedSize(800, 480)
         self.setStyleSheet("background-color: black;")
-        
-        # Create an instance of CustomWidget
+
         self.rpm_widget = hud_widgets.RPMWidget()
+        self.setCentralWidget(self.rpm_widget)
+        # self.rpm_widget.move(100, 50)
 
-        # Add the custom widget to the main layout
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.rpm_widget)
+        self.gps_widget = hud_widgets.GPSWidget()
+        self.gps_widget.move(200, 25)
+        self.gps_widget.setParent(self)
+        # self.layout = QVBoxLayout()
+        # self.layout.addWidget(self.rpm_widget)
 
-        # Set the main layout to the central widget
-        central_widget = QWidget(self)
-        central_widget.setLayout(self.layout)
-        self.setCentralWidget(central_widget)        
+        # central_widget = QWidget(self)
+        # central_widget.setLayout(self.layout)
+        # self.setCentralWidget(central_widget)
         
 
 if __name__ == '__main__':
