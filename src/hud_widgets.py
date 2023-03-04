@@ -119,6 +119,14 @@ class GPSWidget(QWidget):
             self.gps_alt_label.setProperty("text", f" ALT {alt}m")
         else:
             self.gps_label.start_blinking()
+            self.gps_label = hud_labels.BlinkingBorderedLabel("GPS FIX", utils.LIGHT_GREEN, self)
+            self.gps_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
+
+            self.gps_coor_label = hud_labels.PlainLabel(" --.-----° N, --.------° E ", self)
+            self.gps_coor_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
+
+            self.gps_alt_label = hud_labels.PlainLabel("ALT ----  ", self)
+            self.gps_alt_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
     async def update_gps_async(self):
         while True:
