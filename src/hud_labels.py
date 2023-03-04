@@ -6,10 +6,12 @@ import utils
 
 # label with text horizontally flipped. 
 class FlippedLabel(QLabel):
+
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
-        self.setStyleSheet(f"color: {utils.LIGHT_GREEN}")
-        self.setStyleSheet(f"font {utils.SMALL_FONT_SIZE}pt {utils.DEFAUT_FONT}")
+        # self.setStyleSheet(f"color: {utils.LIGHT_GREEN}")
+        # self.setStyleSheet(f"font {utils.SMALL_FONT_SIZE}pt {utils.DEFAUT_FONT}")
+        # self.setAlignment(Qt.AlignLeft)
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -21,24 +23,21 @@ class FlippedLabel(QLabel):
 
 
 class PlainLabel(FlippedLabel):
-    def __init__(self, text, x, y, parent=None):
+    def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.setStyleSheet("background-color: black;")
-        self.move(x, y)
         
         
 class BorderedLabel(FlippedLabel):
-    def __init__(self, text, x, y, border_color, parent=None):
+    def __init__(self, text, border_color, parent=None):
         super().__init__(text, parent)
-        self.move(x, y)
         self.setStyleSheet("background-color: black;")
         self.setStyleSheet(f"border: 2px solid {border_color}; padding: 5px;")
         
         
 class BlinkingLabel(FlippedLabel):
-    def __init__(self, text, x, y, parent=None):
+    def __init__(self, text, parent=None):
         super().__init__(text, parent)
-        self.move(x, y)
         self.setStyleSheet("padding: 5px;")
         self.timer = QTimer()
         self.timer.timeout.connect(self.toggle_visibility)
@@ -49,12 +48,10 @@ class BlinkingLabel(FlippedLabel):
         self.visible = not self.visible
         self.setVisible(self.visible)
        
-    
 
 class BlinkingBorderedLabel(FlippedLabel):
-    def __init__(self, text, x, y, border_color, parent=None):
+    def __init__(self, text, border_color, parent=None):
         super().__init__(text, parent)
-        self.move(x, y)
         self.border_color = border_color
         self.setStyleSheet(f"border: 2px solid {border_color}; padding: 5px;")
         

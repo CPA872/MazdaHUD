@@ -2,9 +2,11 @@ import sys
 # import obd
 import utils
 import hud_labels
+import hud_widgets
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QProgressBar
+from PyQt5.QtWidgets import QWidget
 
 from rpm_bar import RPMBar
 
@@ -14,20 +16,19 @@ class MazdaHUD(QMainWindow):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setFixedSize(800, 480)
         self.setStyleSheet("background-color: black;")
+        
+        # Create an instance of CustomWidget
+        self.rpm_widget = hud_widgets.RPMWidget()
+
+        # Add the custom widget to the main layout
         self.layout = QVBoxLayout()
+        self.layout.addWidget(self.rpm_widget)
+
+        # Set the main layout to the central widget
+        central_widget = QWidget(self)
+        central_widget.setLayout(self.layout)
+        self.setCentralWidget(central_widget)        
         
-        self.rpm_value_label = hud_labels.PlainLabel("4.1", 50, 50, self)
-        self.rpm_value_label.setStyleSheet("color: lightgreen; font-size: 20pt;")
-        self.rpm_value_label.move(50, 50)
-
-        self.rpmx1000_label = hud_labels.PlainLabel("RPM x1000", 50, 50)
-        
-        self.gps_label = hud_labels.BlinkingBorderedLabel("GPS", 200, 50, utils.LIGHT_GREEN)
-
-        self.gps_spd_label = hud_labels.PlainLabel("SPD ---", 250, 50)
-
-        self.gps_alt_label = hud_labels.PlainLabel("ALT ---", 400, 50)
-            
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
