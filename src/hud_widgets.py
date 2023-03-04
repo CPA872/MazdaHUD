@@ -12,7 +12,6 @@ from PyQt5.QtGui import QPainter, QLinearGradient, QColor
 
 from gps_reader import read_gps
 
-
 class RPMWidget(QWidget):
     def __init__(self):
         super().__init__()
@@ -36,46 +35,37 @@ class RPMWidget(QWidget):
         self.rpmx1000_label.setStyleSheet("color: lightgreen; font-size: 12pt; font-family: Consolas;")
         self.layout.addWidget(self.rpmx1000_label, alignment=Qt.AlignHCenter)
 
+        self.rpm_bar.setStyleSheet(
+            "QProgressBar { \
+                    background-color: black; \
+                    border: 1px solid white; \
+                } \
+             QProgressBar::chunk { \
+                background-color: lightgreen; \
+                margin: 2px; /* adjust the margin to set the padding */}"
+        )
+
         self.setLayout(self.layout)
+        self.update_rpm(0)
 
-        self.update_rpm(4000)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_rpm)
+        self.timer.start(10)
 
-    def update_rpm(self, rpm):
+    def update_rpm(self, rpm=None):
+        if rpm is None:
+            rpm = utils.obd.get_rpm()
         self.rpm_value_label.setText("%.1f" % (rpm / 1000))
         self.rpm_bar.setValue(int(rpm / 80))
         if rpm < 3500:
             self.rpm_value_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
-            self.rpm_bar.setStyleSheet(
-                "QProgressBar { \
-                        background-color: black; \
-                        border: 1px solid white; \
-                    } \
-                QProgressBar::chunk { \
-                background-color: lightgreen; \
-                margin: 2px; /* adjust the margin to set the padding */}"
-                )
+            self.rpm_bar.setStyleSheet(" QProgressBar::chunk { background-color: lightgreen; }")
         elif rpm < 4500:
             self.rpm_value_label.setStyleSheet("color: orange; font-size: 15pt; font-family: Consolas;")
-            self.rpm_bar.setStyleSheet(
-                "QProgressBar { \
-                        background-color: black; \
-                        border: 1px solid white; \
-                    } \
-                QProgressBar::chunk { \
-                background-color: orange; \
-                margin: 2px; /* adjust the margin to set the padding */}"
-            )
+            self.rpm_bar.setStyleSheet(" QProgressBar::chunk { background-color: orange; }")
         else:
             self.rpm_value_label.setStyleSheet("color: red; font-size: 15pt; font-family: Consolas;")
-            self.rpm_bar.setStyleSheet(
-                "QProgressBar { \
-                        background-color: black; \
-                        border: 1px solid white; \
-                    } \
-                QProgressBar::chunk { \
-                background-color: red; \
-                margin: 2px; /* adjust the margin to set the padding */}"
-            )
+            self.rpm_bar.setStyleSheet(" QProgressBar::chunk { background-color: red; }")
 
 
 class GPSWidget(QWidget):
@@ -108,12 +98,9 @@ class GPSWidget(QWidget):
     def update_gps(self):
         # return
         mode, coor, alt = read_gps()
-        # mode = 3
-        # coor = "51.813360° N, 99.550329°Z"
-        # alt = 555
-        # print("update gps")
+        alt = 120
 
-        if mode == 3:  # GPS FIX
+        if mode == 3:  # GPS 3D FIX
             self.gps_label.stop_blinking()
             self.gps_coor_label.setProperty("text", f" {coor} ")
             self.gps_alt_label.setProperty("text", f" ALT {alt}m")
@@ -155,7 +142,9 @@ class SpeedWidget(QWidget):
 
         self.update_speed(75, 120)
         self.update_format(False)
-
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start(10)
 
     def update_speed(self, spd_kph=None, spd_mph=None):
         spd_kph, spd_mph = utils.obd.get_speed()
