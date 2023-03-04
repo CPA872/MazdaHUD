@@ -10,8 +10,6 @@ from PyQt5.QtWidgets import QWidget
 class RPMWidget(QWidget):
     def __init__(self):
         super().__init__()
-        # self.setGeometry(50, 50, 50, 400)
-        # self.move(100, 50)
         self.setFixedSize(100, 400)
         # self.setStyleSheet("border: 1px solid yellow;")
 
@@ -86,15 +84,16 @@ class GPSWidget(QWidget):
 
         self.gps_label = hud_labels.BlinkingBorderedLabel("GPS", utils.LIGHT_GREEN, self)
         self.gps_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
-        self.layout.addWidget(self.gps_label)
 
         self.gps_spd_label = hud_labels.PlainLabel("  SPD ---  ", self)
         self.gps_spd_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
-        self.layout.addWidget(self.gps_spd_label)
 
         self.gps_alt_label = hud_labels.PlainLabel("  ALT ----  ", self)
         self.gps_alt_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
+
         self.layout.addWidget(self.gps_alt_label)
+        self.layout.addWidget(self.gps_spd_label)
+        self.layout.addWidget(self.gps_label)
 
         self.setLayout(self.layout)
 
@@ -108,3 +107,42 @@ class GPSWidget(QWidget):
 
         self.gps_spd_label.setText("  SPD %3d" % int(spd))
         self.gps_alt_label.setText("  ALT %4d" % int(alt))
+
+
+class SpeedWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setFixedSize(400, 150)
+        self.setStyleSheet("border: 1px solid yellow;")
+        self.layout = QHBoxLayout()
+        self.mph = True
+
+        self.speed_label = hud_labels.PlainLabel(" 00")
+        self.speed_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 120pt; font-family: Consolas;")
+        self.speed_label.setAlignment(Qt.AlignRight)
+
+        self.mphkph_label = hud_labels.PlainLabel(" mph")
+        self.mphkph_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 20pt; font-family: Consolas;")
+        self.layout.addWidget(self.mphkph_label, alignment=Qt.AlignBottom)
+        self.layout.addWidget(self.speed_label)
+
+        self.setLayout(self.layout)
+
+        self.update_speed(75, 120)
+
+    def update_speed(self, spd_mph, spd_kph):
+        if self.mph:
+            self.speed_label.setText("%3d" % int(spd_mph))
+        else:
+            self.speed_label.setText("%3d" % int(spd_kph))
+        self.speed_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 120pt; font-family: Consolas;")
+
+    def update_format(self, mph):
+        if mph:
+            self.mph = True
+            self.mphkph_label.setText(" mph")
+            self.mphkph_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 20pt; font-family: Consolas;")
+        else:
+            self.mph = False
+            self.mphkph_label.setText(" kph")
+            self.mphkph_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 20pt; font-family: Consolas;")

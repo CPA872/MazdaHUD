@@ -24,6 +24,10 @@ class MazdaHUD(QMainWindow):
         self.gps_widget = hud_widgets.GPSWidget()
         self.gps_widget.move(200, 25)
         self.gps_widget.setParent(self)
+
+        self.spd_widget = hud_widgets.SpeedWidget()
+        self.spd_widget.move(150, 200)
+        self.spd_widget.setParent(self)
         # self.layout = QVBoxLayout()
         # self.layout.addWidget(self.rpm_widget)
 
