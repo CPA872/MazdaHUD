@@ -5,7 +5,7 @@ import hud_labels
 import hud_widgets
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QProgressBar
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
 from PyQt5.QtWidgets import QWidget
 
 from rpm_bar import RPMBar
@@ -17,8 +17,12 @@ class MazdaHUD(QMainWindow):
         self.setFixedSize(800, 480)
         self.setStyleSheet("background-color: black;")
 
+        self.placeholder = QLabel()
+        self.setCentralWidget(self.placeholder)
+
         self.rpm_widget = hud_widgets.RPMWidget()
-        self.setCentralWidget(self.rpm_widget)
+        self.rpm_widget.move(670, 50)
+        self.rpm_widget.setParent(self)
         # self.rpm_widget.move(100, 50)
 
         self.gps_widget = hud_widgets.GPSWidget()

@@ -1,10 +1,14 @@
 import sys
+
+from PyQt5 import QtWidgets, QtCore
+
 import utils
 import hud_labels
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QProgressBar, QSizePolicy, QSpacerItem
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QPainter, QLinearGradient, QColor
 
 
 class RPMWidget(QWidget):
@@ -14,9 +18,6 @@ class RPMWidget(QWidget):
         # self.setStyleSheet("border: 1px solid yellow;")
 
         self.layout = QVBoxLayout()
-        self.layout.addItem(QSpacerItem(10, 20, QSizePolicy.Minimum))
-        # self.rpm_layout.setAlignment(Qt.AlignCenter)
-        # self.rpm_layout.setAlignment(Qt.AlignHCenter)
 
         self.rpm_value_label = hud_labels.PlainLabel("4.1", self)
         self.rpm_value_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
@@ -102,8 +103,8 @@ class GPSWidget(QWidget):
             self.gps_label.stop_blinking()
         if not fix_state:
             self.gps_label.start_blinking()
-            self.gps_spd_label.setText("  SPD ---  ")
-            self.gps_alt_label.setText("  ALT ----  ")
+            self.gps_spd_label.setText("  SPD ---")
+            self.gps_alt_label.setText("  ALT ----")
 
         self.gps_spd_label.setText("  SPD %3d" % int(spd))
         self.gps_alt_label.setText("  ALT %4d" % int(alt))
@@ -113,7 +114,7 @@ class SpeedWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.setFixedSize(400, 150)
-        self.setStyleSheet("border: 1px solid yellow;")
+        # self.setStyleSheet("border: 1px solid yellow;")
         self.layout = QHBoxLayout()
         self.mph = True
 
@@ -129,6 +130,7 @@ class SpeedWidget(QWidget):
         self.setLayout(self.layout)
 
         self.update_speed(75, 120)
+        self.update_format(False)
 
     def update_speed(self, spd_mph, spd_kph):
         if self.mph:
@@ -140,9 +142,12 @@ class SpeedWidget(QWidget):
     def update_format(self, mph):
         if mph:
             self.mph = True
-            self.mphkph_label.setText(" mph")
-            self.mphkph_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 20pt; font-family: Consolas;")
+            self.mphkph_label.setProperty("text", " mph")
         else:
             self.mph = False
-            self.mphkph_label.setText(" kph")
-            self.mphkph_label.setStyleSheet(f"color: {utils.LIGHT_GREEN}; font-size: 20pt; font-family: Consolas;")
+            self.mphkph_label.setProperty("text", " kph")
+
+
+class BottomStatusWidget(QWidget):
+    def __init__(self):
+        super().__init__()
