@@ -1,11 +1,15 @@
 from gpsdclient import GPSDClient
-
+import time
 
 def read_gps():
+    # time.sleep(3)
     with GPSDClient(host='127.0.0.1') as client:
         for result in client.dict_stream(convert_datetime=True, filter=["TPV"]):
             
             mode = result.get("mode", "n/a")
+            if int(mode) == 1 or int(mode) == 2:
+                return "-1", "-999", "-999"
+
             lat  = result.get("lat", "n/a")
             lon = result.get("lon", "n/a")
             alt  = result.get("alt", "n/a")

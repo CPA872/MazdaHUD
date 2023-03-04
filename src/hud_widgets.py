@@ -1,7 +1,7 @@
+import asyncio
 import sys
 
-from PyQt5 import QtWidgets, QtCore
-
+import obd_reader
 import utils
 import hud_labels
 
@@ -11,9 +11,6 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QPainter, QLinearGradient, QColor
 
 from gps_reader import read_gps
-
-
-# from gps_reader import read_gps
 
 
 class RPMWidget(QWidget):
@@ -91,7 +88,7 @@ class GPSWidget(QWidget):
         self.gps_label = hud_labels.BlinkingBorderedLabel("GPS FIX", utils.LIGHT_GREEN, self)
         self.gps_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
-        self.gps_coor_label = hud_labels.PlainLabel(" 44.813360° N, 6.550329° E ", self)
+        self.gps_coor_label = hud_labels.PlainLabel(" --.-----° N, --.------° E ", self)
         self.gps_coor_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
         self.gps_alt_label = hud_labels.PlainLabel("ALT ----  ", self)
@@ -103,9 +100,10 @@ class GPSWidget(QWidget):
 
         self.setLayout(self.layout)
 
-        self.gps_timer = QTimer()
-        self.gps_timer.timeout.connect(self.update_gps)
-        self.gps_timer.start(10000)
+        # self.gps_timer = QTimer()
+        # self.gps_timer.timeout.connect(self.update_gps)
+        # self.gps_timer.start(10000)
+        asyncio.ensure_future(self.update_gps_async())
 
     def update_gps(self):
         # return
@@ -121,6 +119,11 @@ class GPSWidget(QWidget):
             self.gps_alt_label.setProperty("text", f" ALT {alt}m")
         else:
             self.gps_label.start_blinking()
+
+    async def update_gps_async(self):
+        while True:
+            self.update_gps()
+            await asyncio.sleep(10)
 
 
 class SpeedWidget(QWidget):
@@ -145,7 +148,10 @@ class SpeedWidget(QWidget):
         self.update_speed(75, 120)
         self.update_format(False)
 
-    def update_speed(self, spd_mph, spd_kph):
+
+    def update_speed(self, spd_kph=None, spd_mph=None):
+        spd_kph, spd_mph = utils.obd.get_speed()
+
         if self.mph:
             self.speed_label.setText("%3d" % int(spd_mph))
         else:
