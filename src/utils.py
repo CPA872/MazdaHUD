@@ -18,7 +18,7 @@ LIGHT_GREEN = "#11ff00"
 DEFAUT_FONT = "Consolas"
 
 try:
-    obd = obd_reader.OBDReader()
+    obd = obd_reader.OBDReader(True)
     obd.start_async_watch()
 except:
     obd.connection.close()

@@ -6,10 +6,13 @@ from datetime import datetime
 
 class OBDReader:
 
-    def __init__(self):
-        self.connection = obd.Async("/dev/ttyACM1")  # auto-connects to USB or RF port
+    def __init__(self, is_async):
+        if is_async:
+            self.connection = obd.Async("/dev/ttyUSB0")  # auto-connects to USB or RF port
+        else:
+            self.connection = obd.OBD("/dev/ttyUSB0")
 
-    async def start_async_watch(self):
+    def start_async_watch(self):
         self.connection.watch(obd.commands.SPEED)
         self.connection.watch(obd.commands.RPM)
         self.connection.watch(obd.commands.COOLANT_TEMP)
@@ -17,11 +20,18 @@ class OBDReader:
         self.connection.start()
 
     def get_speed(self):
+        # print("call get speed")
         response = self.connection.query(obd.commands.SPEED)
-        return int(response.value.magnitutde), int(response.value.to('mph').magnitude)
+        # print(response.value.to('mph'))
+        # print(int(response.value.magnitude), int(response.value.to('mph').magnitude))
+        return int(response.value.magnitude), int(response.value.to('mph').magnitude)
 
     def get_rpm(self):
         response = self.connection.query(obd.commands.RPM)
+        # print(response, type(response))
+        # print(response.value, type(response.value))
+        # print(response.value.magnitude, type(response.value.magnitude))
+
         return int(response.value.magnitude)
 
     def new_coolant_temp(self):
@@ -43,3 +53,6 @@ class OBDReader:
             time.sleep(0.5)
 
 
+if __name__ == "__main__":
+    reader = OBDReader(False)
+    reader.read_obd_blocking()

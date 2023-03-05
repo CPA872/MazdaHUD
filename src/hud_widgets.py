@@ -90,14 +90,15 @@ class GPSWidget(QWidget):
 
         self.setLayout(self.layout)
 
-        # self.gps_timer = QTimer()
-        # self.gps_timer.timeout.connect(self.update_gps)
-        # self.gps_timer.start(10000)
-        asyncio.ensure_future(self.update_gps_async())
+        self.gps_timer = QTimer()
+        self.gps_timer.timeout.connect(self.update_gps)
+        self.gps_timer.start(3000)
+        # asyncio.ensure_future(self.update_gps_async())
 
     def update_gps(self):
         # return
         mode, coor, alt = read_gps()
+        print("GPS return: ", mode, coor, alt)
         alt = 120
 
         if mode == 3:  # GPS 3D FIX
@@ -115,10 +116,10 @@ class GPSWidget(QWidget):
             self.gps_alt_label = hud_labels.PlainLabel("ALT ----  ", self)
             self.gps_alt_label.setStyleSheet("color: lightgreen; font-size: 15pt; font-family: Consolas;")
 
-    async def update_gps_async(self):
-        while True:
-            self.update_gps()
-            await asyncio.sleep(10)
+    # async def update_gps_async(self):
+    #     while True:
+    #         self.update_gps()
+    #         await asyncio.sleep(10)
 
 
 class SpeedWidget(QWidget):
@@ -143,7 +144,7 @@ class SpeedWidget(QWidget):
         self.update_speed(75, 120)
         self.update_format(False)
         self.timer = QTimer()
-        self.timer.timeout.connect(self.update)
+        self.timer.timeout.connect(self.update_speed)
         self.timer.start(10)
 
     def update_speed(self, spd_kph=None, spd_mph=None):
