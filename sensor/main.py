@@ -8,10 +8,13 @@ sensors = sensor_main.sensor(dht_pin)
 while True:
     print("=============================")
     sensors.sensor_all_update()
-    print(sensors.acceleration, sensors.heading)
-
-    if (sensors.c_temp != -1000.0 and sensors.f_temp != -1000.0 and sensors.humidity != -1000.0):
-        print(sensors.c_temp, sensors.f_temp, sensors.humidity)
+    #print(sensors.acceleration, sensors.heading_angle, sensors.compass_direction)
+    print("Acceleration: %.2fm/s^2" %sensors.acceleration)
+    print("Direction: %.0f" %sensors.heading_angle+u'\u00b0'+sensors.compass_direction)
     
-    print(sensors.visible_brightness)
+    if (sensors.c_temp != -1000.0 and sensors.f_temp != -1000.0 and sensors.humidity != -1000.0):
+        print ("Temperature: %.1f" %sensors.c_temp+u'\u00b0'+"C / %.1f" %sensors.f_temp+u'\u00b0'+"F")
+        print("Humidity: %.1f" %sensors.humidity+"%")
+    
+    print("Brightness level:", sensors.visible_brightness)
     time.sleep(2)

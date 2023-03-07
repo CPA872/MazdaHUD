@@ -8,19 +8,17 @@ class TempHumidityReader:
         self.dhtDevice = adafruit_dht.DHT11(GPIO_pin)
         self.error = 0
 
-    def get_c_temperature(self):
+    def get_temperature(self):
         try:
-            c_temp = self.dhtDevice.temperature
+            if (type(self.dhtDevice.temperature) == type(None)):
+                c_temp = f_temp = -1000.0
+            else:
+                c_temp = float(self.dhtDevice.temperature)
+                f_temp = float(c_temp) * 1.8 + 32
         except RuntimeError:
             c_temp = -1000.0
-        return c_temp
-    
-    def get_f_temperature(self):
-        try:
-            f_temp = self.dhtDevice.temperature * 1.8 + 32
-        except RuntimeError:
             f_temp = -1000.0
-        return f_temp
+        return [c_temp, f_temp]
     
     def get_humidity(self):
         try:

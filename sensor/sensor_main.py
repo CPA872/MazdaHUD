@@ -14,11 +14,12 @@ class sensor:
 
     def imu_update(self):
         self.acceleration = self.imu.get_acceleration() #m/s^2
-        self.heading = self.imu.get_heading()
+        self.heading_angle = self.imu.get_heading()[0]
+        self.compass_direction = self.imu.get_heading()[1]
 
     def tempHumidity_update(self):
-        self.c_temp = self.dht.get_c_temperature()
-        self.f_temp = self.dht.get_f_temperature()
+        self.c_temp = self.dht.get_temperature()[0]
+        self.f_temp = self.dht.get_temperature()[1]
         self.humidity = self.dht.get_humidity()
     
     def brightness_update(self):
